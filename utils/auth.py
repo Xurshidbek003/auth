@@ -18,7 +18,7 @@ pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 def hash_password(password):
     return pwd_context.hash(password)
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/sign_in")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/sign_in")
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

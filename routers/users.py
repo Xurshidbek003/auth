@@ -20,6 +20,10 @@ user_router = APIRouter()
 
 @user_router.post("/sign_up")
 def sign_up(form: UserModel, db: Session = Depends(database)):
+    user = db.query(Users).filter(Users.email == form.email).first()
+    if user:
+        raise HTTPException(400, 'Email already registered')
+
     user = Users(
         email=form.email,
         password=hash_password(form.password),
@@ -31,9 +35,8 @@ def sign_up(form: UserModel, db: Session = Depends(database)):
 
 
 @user_router.post("/sign_in")
-def sign_in(
-    db: Session = Depends(database), form_data: OAuth2PasswordRequestForm = Depends()
-):
+def sign_in(db: Session = Depends(database), form_data: OAuth2PasswordRequestForm = Depends()):
+
     user = db.query(Users).filter(Users.email == form_data.username).first()
     if user:
         is_validate_password = pwd_context.verify(form_data.password, user.password)
@@ -72,6 +75,10 @@ def profil(current_user: Users = Depends(get_current_user)):
 @user_router.put("/update")
 def update_profil(form: UserModel, db: Session = Depends(database),
                     current_user: Users = Depends(get_current_user)):
+
+    user = db.query(Users).filter(Users.email == form.email).first()
+    if user:
+        raise HTTPException(400, 'Email already registered')
 
     db.query(Users).filter(Users.id == current_user.id).update(
         {

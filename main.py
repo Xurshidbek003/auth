@@ -6,7 +6,7 @@ from routers.users import user_router
 app = FastAPI(docs_url='/')
 
 
-app.include_router(user_router)
+app.include_router(user_router, tags=['Auth'], prefix='/auth')
 
 
 app.add_middleware(
